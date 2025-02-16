@@ -12,4 +12,12 @@ spring:
       enabled: always
 
   profiles:
-    active: production
+    active: development
+
+security:
+  scrypt:
+    cpu-cost: 1024
+    memory-cost: 4
+    parallelism: 1
+    key-length: 16
+    salt-length: 21474836
