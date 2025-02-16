@@ -23,19 +23,36 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(platform("org.junit:junit-bom:5.10.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.80")
 
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
+
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation(platform("org.junit:junit-bom:5.12.0-RC2"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.0-RC2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation("net.datafaker:datafaker:2.4.2")
+    implementation("org.instancio:instancio-junit:5.3.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
+
+
+
+
+
+
 }
 
 tasks.test {

@@ -8,6 +8,7 @@ public class WelcomeController {
 
     @GetMapping("/welcome")
     public String index() {
+
         return "Welcome to Spring";
     }
 }
