@@ -2,12 +2,13 @@ package hexlet.code.app.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.app.dto.UserDTO;
-import hexlet.code.app.dto.UserUpdateDTO;
-import hexlet.code.app.model.User;
+import hexlet.code.app.dto.user.UserDTO;
+import hexlet.code.app.dto.user.UserUpdateDTO;
+import hexlet.code.app.model.entity.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,23 +51,19 @@ final class UsersControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @Autowired
-    private ModelGenerator modelGenerator;
-
     @Autowired
     private UserRepository userRepository;
-
-    private User testUser;
-
+    @Autowired
+    private ModelGenerator modelGenerator;
+    @Autowired
+    private MockMvc mvc;
+    @Autowired
+    private ObjectMapper om;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+    private User testUser;
 
     @BeforeEach
     void setUp() {
@@ -71,15 +71,17 @@ final class UsersControllerTest {
 
         mvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
+                .apply(springSecurity())
                 .build();
 
         testUser = Instancio.of(modelGenerator.getUserModelWithAllFields()).create();
         userRepository.save(testUser);
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
     }
 
     @Test
     void testIndex() throws Exception {
-        var request = mvc.perform(get("/api/users"))
+        var request = mvc.perform(get("/api/users").with(token))
                 .andExpect(status().isOk())
                 .andExpect(header().string("X-Total-Count", String.valueOf(userRepository.count())))
                 .andReturn()
@@ -103,14 +105,14 @@ final class UsersControllerTest {
     void testIndexWithoutUsers() throws Exception {
         userRepository.deleteAll();
 
-        mvc.perform(get("/api/users"))
+        mvc.perform(get("/api/users").with(token))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(""));
     }
 
     @Test
     void testShow() throws Exception {
-        var request = mvc.perform(get("/api/users/" + testUser.getId()))
+        var request = mvc.perform(get("/api/users/" + testUser.getId()).with(token))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -129,7 +131,7 @@ final class UsersControllerTest {
 
     @Test
     void testShowWithInvalidId() throws Exception {
-        mvc.perform(get("/api/users/" + 999))
+        mvc.perform(get("/api/users/" + 999).with(token))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("User with id 999 not found"));
     }
@@ -139,6 +141,7 @@ final class UsersControllerTest {
         var userData = Instancio.of(modelGenerator.getUserModelWithAllFields()).create();
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userData));
 
@@ -161,6 +164,7 @@ final class UsersControllerTest {
         var userData = Instancio.of(modelGenerator.getUserModelWithRequiredFields()).create();
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userData));
 
@@ -185,6 +189,7 @@ final class UsersControllerTest {
         userData.setPassword("11");
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userData));
 
@@ -202,6 +207,7 @@ final class UsersControllerTest {
         userData.setPassword(null);
 
         var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(userData));
 
@@ -221,6 +227,7 @@ final class UsersControllerTest {
         data.put("password", "123");
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -246,6 +253,7 @@ final class UsersControllerTest {
         data.put("lastName", "Doe");
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -268,6 +276,7 @@ final class UsersControllerTest {
         data.put("password", "11");
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -287,6 +296,7 @@ final class UsersControllerTest {
         data.setPassword(JsonNullable.of(null));
 
         var request = put("/api/users/" + testUser.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -304,15 +314,18 @@ final class UsersControllerTest {
         data.put("password", "password");
 
         mvc.perform(put("/api/users/999")
+                        .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(data)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("User with id 999 not found"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
     void testDestroy() throws Exception {
         mvc.perform(delete("/api/users/" + testUser.getId()))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(delete("/api/users/" + testUser.getId())
+                        .with(token))
                 .andExpect(status().isNoContent());
 
         assertFalse(userRepository.existsById(testUser.getId()));
@@ -320,8 +333,13 @@ final class UsersControllerTest {
 
     @Test
     void testDestroyWithInvalidId() throws Exception {
-        mvc.perform(delete("/api/users/999"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("User with id 999 not found"));
+        mvc.perform(delete("/api/users/999")
+                        .with(token))
+                .andExpect(status().isForbidden());
+    }
+
+    @AfterAll
+    static void tearDown(@Autowired UserRepository userRepository) {
+        userRepository.deleteAll();
     }
 }

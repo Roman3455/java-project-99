@@ -27,8 +27,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     implementation("org.bouncycastle:bcprov-jdk18on:1.80")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.postgresql:postgresql")
@@ -48,11 +50,7 @@ dependencies {
     implementation("org.instancio:instancio-junit:5.3.0")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
 
-
-
-
-
-
+    implementation("me.paulschwarz:spring-dotenv:4.0.0")
 }
 
 tasks.test {

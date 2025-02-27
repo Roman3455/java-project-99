@@ -1,9 +1,9 @@
 package hexlet.code.app.mapper;
 
-import hexlet.code.app.dto.UserCreateDTO;
-import hexlet.code.app.dto.UserDTO;
-import hexlet.code.app.dto.UserUpdateDTO;
-import hexlet.code.app.model.User;
+import hexlet.code.app.dto.user.UserCreateDTO;
+import hexlet.code.app.dto.user.UserDTO;
+import hexlet.code.app.dto.user.UserUpdateDTO;
+import hexlet.code.app.model.entity.User;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
