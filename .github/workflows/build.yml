@@ -20,6 +20,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Make build-run
         working-directory: app
+        env:
+          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
         run: make build-run
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v9.0.0

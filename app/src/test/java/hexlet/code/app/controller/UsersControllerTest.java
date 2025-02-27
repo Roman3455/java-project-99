@@ -80,7 +80,6 @@ final class UsersControllerTest {
         testUser = Instancio.of(modelGenerator.getUserModelWithAllFields()).create();
         userRepository.save(testUser);
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
-    }
 
     @AfterEach
     void tearDown() {
@@ -344,5 +343,6 @@ final class UsersControllerTest {
         mvc.perform(delete("/api/users/999")
                         .with(token))
                 .andExpect(status().isForbidden());
-    }
+      {
+
 }
