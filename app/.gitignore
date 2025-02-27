@@ -40,4 +40,4 @@ out/
 ../.DS_Store
 
 .env
-application-development.yml
+/src/main/resources/application-dev.yml
