@@ -8,7 +8,7 @@ import hexlet.code.app.model.entity.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -72,8 +72,6 @@ final class UsersControllerTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
-
         mvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
@@ -82,6 +80,10 @@ final class UsersControllerTest {
         testUser = Instancio.of(modelGenerator.getUserModelWithAllFields()).create();
         userRepository.save(testUser);
         token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
     }
 
     @Test
@@ -341,10 +343,6 @@ final class UsersControllerTest {
         mvc.perform(delete("/api/users/999")
                         .with(token))
                 .andExpect(status().isForbidden());
-    }
+      {
 
-    @AfterAll
-    static void tearDown(@Autowired UserRepository userRepository) {
-        userRepository.deleteAll();
-    }
 }
