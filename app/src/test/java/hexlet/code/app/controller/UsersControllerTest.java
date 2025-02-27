@@ -51,14 +51,19 @@ final class UsersControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ModelGenerator modelGenerator;
+
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private ObjectMapper om;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
