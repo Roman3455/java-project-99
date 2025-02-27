@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class DatafakerConfig {
 
     @Bean
-    public Faker getFaker() {
+    Faker getFaker() {
 
         return new Faker();
     }

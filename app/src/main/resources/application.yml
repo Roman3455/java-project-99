@@ -1,23 +1,29 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: app
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-
   output:
     ansi:
       enabled: always
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
 
   profiles:
-    active: development
+    active: prod
 
 security:
   scrypt:
-    cpu-cost: 1024
-    memory-cost: 4
+    cpu-cost: 32
+    memory-cost: 2
     parallelism: 1
-    key-length: 16
-    salt-length: 21474836
+    key-length: 4
+    salt-length: 2147
+
+rsa:
+  private-key: classpath:certificates/private.pem
+  public-key: classpath:certificates/public.pem
