@@ -4,7 +4,6 @@ import hexlet.code.app.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -44,7 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(mvcMatcher.pattern("/")).permitAll()
                         .requestMatchers(mvcMatcher.pattern("/welcome")).permitAll()
                         .requestMatchers(mvcMatcher.pattern("/api/login")).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(mvcMatcher.pattern("/index.html")).permitAll()
+                        .requestMatchers(mvcMatcher.pattern("/assets/**")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder))
