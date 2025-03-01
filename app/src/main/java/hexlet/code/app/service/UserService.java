@@ -36,7 +36,6 @@ public class UserService {
         return userMapper.map(getById(id));
     }
 
-    @Transactional
     public UserDTO createUser(UserCreateDTO userData) {
         var user = userMapper.map(userData);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,10 +56,9 @@ public class UserService {
         return userMapper.map(user);
     }
 
-    @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException(String.format("User with id %s not found", id));
+            throw new ResourceNotFoundException(String.format("User with id '%s' not found", id));
         }
 
         userRepository.deleteById(id);
@@ -72,6 +70,6 @@ public class UserService {
 
     private User getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id %d not found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id '%d' not found", id)));
     }
 }

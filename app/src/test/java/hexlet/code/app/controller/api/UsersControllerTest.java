@@ -1,4 +1,4 @@
-package hexlet.code.app.controller;
+package hexlet.code.app.controller.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +68,7 @@ final class UsersControllerTest {
     private PasswordEncoder passwordEncoder;
 
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+
     private User testUser;
 
     @BeforeEach
@@ -141,7 +142,7 @@ final class UsersControllerTest {
     void testShowWithInvalidId() throws Exception {
         mvc.perform(get("/api/users/" + 999).with(token))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("User with id 999 not found"));
+                .andExpect(content().string("User with id '999' not found"));
     }
 
     @Test

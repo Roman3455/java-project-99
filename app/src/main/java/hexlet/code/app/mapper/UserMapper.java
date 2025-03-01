@@ -12,7 +12,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
-        uses = { JsonNullableMapper.class },
+        uses = {JsonNullableMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
@@ -20,6 +20,8 @@ import org.mapstruct.ReportingPolicy;
 public abstract class UserMapper {
 
     public abstract User map(UserCreateDTO dto);
+
     public abstract UserDTO map(User user);
+
     public abstract void update(UserUpdateDTO dto, @MappingTarget User user);
 }

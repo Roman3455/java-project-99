@@ -1,5 +1,6 @@
 package hexlet.code.app.util;
 
+import hexlet.code.app.model.entity.TaskStatus;
 import hexlet.code.app.model.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class ModelGenerator {
 
     private Model<User> userModelWithAllFields;
     private Model<User> userModelWithRequiredFields;
+    private Model<TaskStatus> taskStatusModel;
 
     private final Faker faker;
     private final PasswordEncoder passwordEncoder;
@@ -43,6 +45,13 @@ public class ModelGenerator {
                 .supply(Select.field(User::getPassword), () -> passwordEncoder.encode(faker.internet().password()))
                 .ignore(Select.field(User::getCreatedAt))
                 .ignore(Select.field(User::getUpdatedAt))
+                .toModel();
+
+        taskStatusModel = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .supply(Select.field(TaskStatus::getName), () -> faker.word().noun())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.word().noun())
+                .ignore(Select.field(TaskStatus::getCreatedAt))
                 .toModel();
     }
 }
