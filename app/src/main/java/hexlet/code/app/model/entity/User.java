@@ -1,7 +1,9 @@
 package hexlet.code.app.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,30 +31,28 @@ public class User implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
     private String lastName;
 
     @Email
     @NotEmpty
-    @Column(name = "email", unique = true)
+    @Column(unique = true)
     private String email;
 
     @NotNull
     @Size(min = 3)
-    @Column(name = "password", columnDefinition = "Text")
+    @Column(columnDefinition = "Text")
     private String password;
 
     @CreatedDate
-    @Column(name = "created_at")
     private LocalDate createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
+    private List<Task> tasks;
 }
