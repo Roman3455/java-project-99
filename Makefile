@@ -1,9 +1,5 @@
 .DEFAULT_GOAL := build-run
 
-setup:
-	make -C app setup
-reload-classes:
-	make -C app reload-classes:
 check-java-deps:
 	make -C app check-java-deps:
 app:
