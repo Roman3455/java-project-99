@@ -26,3 +26,14 @@ security:
 rsa:
   private-key: classpath:certificates/private.pem
   public-key: classpath:certificates/public.pem
+
+sentry:
+  dsn: https://4944b5652e7b7d731a0e653c0546b1d4@o4508909755105280.ingest.de.sentry.io/4508909759299664
+  # Add data like request headers and IP for users,
+  # see https://docs.sentry.io/platforms/java/guides/spring-boot/data-management/data-collected/ for more info
+  send-default-pii: true
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for tracing.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
+
+# http://localhost:8081/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config

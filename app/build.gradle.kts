@@ -7,8 +7,9 @@ plugins {
     jacoco
     id("com.github.ben-manes.versions") version "0.52.0"
     id("io.freefair.lombok") version "8.12.1"
-    id("org.springframework.boot") version "3.4.2"
+    id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
+    id("io.sentry.jvm.gradle") version "5.3.0"
 }
 
 group = "hexlet.code"
@@ -22,12 +23,21 @@ repositories {
     mavenCentral()
 }
 
+sentry {
+    includeSourceContext.set(true)
+
+    org.set("demo-kq0")
+    projectName.set("java-spring-boot")
+    authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 
     implementation("org.bouncycastle:bcprov-jdk18on:1.80")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -42,12 +52,12 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation(platform("org.junit:junit-bom:5.12.0-RC2"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.0-RC2")
+    testImplementation(platform("org.junit:junit-bom:5.12.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("net.datafaker:datafaker:2.4.2")
-    implementation("org.instancio:instancio-junit:5.3.0")
+    implementation("org.instancio:instancio-junit:5.4.0")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:4.1.0")
 
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
