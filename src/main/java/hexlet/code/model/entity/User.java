@@ -2,6 +2,7 @@ package hexlet.code.model.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -53,6 +54,6 @@ public class User implements BaseEntity {
     @LastModifiedDate
     private LocalDate updatedAt;
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Task> tasks;
 }
