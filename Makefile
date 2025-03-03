@@ -1,27 +1,31 @@
 .DEFAULT_GOAL := build-run
 
-setup:
-	make -C setup
-
 check-java-deps:
-	make -C app check-java-deps:
+	./gradlew dependencyUpdates -Drevision=release
+
 app:
-	make -C app
+	./gradlew bootRun
+
+dev: app
+
 clean:
-	make -C app clean
+	./gradlew clean
+
 build:
-	make -C app build
+	./gradlew build
+
 install:
-	make -C app install
-dev:
-	make -C app dev
+	./gradlew installDist
+
 lint:
-	make -C app lint
+	./gradlew checkstyleMain
+
 test:
-	make -C app test
+	./gradlew test
+
 report:
-	make -C app report
-build-run:
-	make -C app build-run
+	./gradlew jacocoTestReport
+
+build-run: clean build install lint test report
 
 .PHONY: build
