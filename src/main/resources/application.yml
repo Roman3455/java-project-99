@@ -13,7 +13,7 @@ spring:
       ddl-auto: create-drop
 
   profiles:
-    active: dev
+    active: prod
 
 security:
   scrypt:
