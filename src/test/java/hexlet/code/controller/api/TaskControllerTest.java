@@ -165,6 +165,6 @@ public class TaskControllerTest {
     void testTaskParams() throws Exception {
         var url = "/api/tasks?titleCont=create&taskStatus=draft&labelId=1";
         mvc.perform(get(url).with(token))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }

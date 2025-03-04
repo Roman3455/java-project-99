@@ -31,9 +31,6 @@ public class TaskController {
     @GetMapping("")
     public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO params) {
         var result = taskService.getAllTasks(params);
-        if (result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))

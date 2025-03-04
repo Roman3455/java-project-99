@@ -32,9 +32,6 @@ public class UsersController {
     @GetMapping("")
     public ResponseEntity<List<UserDTO>> index() {
         var result = userService.getAllUsers();
-        if (result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))

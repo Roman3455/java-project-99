@@ -111,15 +111,6 @@ final class UsersControllerTest {
     }
 
     @Test
-    void testIndexWithoutUsers() throws Exception {
-        userRepository.deleteAll();
-
-        mvc.perform(get("/api/users").with(token))
-                .andExpect(status().isNoContent())
-                .andExpect(content().string(""));
-    }
-
-    @Test
     void testShow() throws Exception {
         var request = mvc.perform(get("/api/users/" + testUser.getId()).with(token))
                 .andExpect(status().isOk())

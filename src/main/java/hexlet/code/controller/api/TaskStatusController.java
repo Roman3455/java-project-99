@@ -30,9 +30,6 @@ public class TaskStatusController {
     @GetMapping("")
     public ResponseEntity<List<TaskStatusDTO>> index() {
         var result = taskStatusService.getAllTaskStatuses();
-        if (result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))

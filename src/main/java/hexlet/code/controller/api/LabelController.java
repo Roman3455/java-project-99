@@ -30,9 +30,6 @@ public class LabelController {
     @GetMapping("")
     public ResponseEntity<List<LabelDTO>> index() {
         var result = labelService.getAllLabels();
-        if (result.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))

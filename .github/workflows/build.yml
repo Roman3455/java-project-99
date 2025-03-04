@@ -16,21 +16,16 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
       - name: Make build-run
-        working-directory: ./
         env:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
           PASSWORD: ${{ secrets.PASSWORD }}
           USERNAME: ${{ secrets.USERNAME }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: make build-run
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v9.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           JACOCO_SOURCE_PATH: ./src/main/java
         with:
           coverageCommand: make report
