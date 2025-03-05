@@ -68,6 +68,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    jvmArgs = listOf(
+        "-javaagent:${classpath.find { it.name.contains("byte-buddy-agent") }?.absolutePath}"
+    )
     testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
