@@ -2,7 +2,7 @@ package hexlet.code.util;
 
 //import hexlet.code.model.entity.Label;
 //import hexlet.code.model.entity.Task;
-//import hexlet.code.model.entity.TaskStatus;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class ModelGenerator {
 
     private Model<User> userModelWithAllFields;
     private Model<User> userModelWithRequiredFields;
-//    private Model<TaskStatus> taskStatusModel;
+    private Model<TaskStatus> taskStatusModel;
 //    private Model<Task> taskModel;
 //    private Model<Label> labelModel;
 
@@ -56,13 +56,13 @@ public class ModelGenerator {
                 .ignore(Select.field(User::getUpdatedAt))
                 .toModel();
 
-//        taskStatusModel = Instancio.of(TaskStatus.class)
-//                .ignore(Select.field(TaskStatus::getId))
-//                .supply(Select.field(TaskStatus::getName), () -> faker.word().noun())
-//                .supply(Select.field(TaskStatus::getSlug), () -> faker.word().noun())
-//                .ignore(Select.field(TaskStatus::getCreatedAt))
-//                .toModel();
-//
+        taskStatusModel = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .supply(Select.field(TaskStatus::getName), () -> faker.word().noun())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.word().noun())
+                .ignore(Select.field(TaskStatus::getCreatedAt))
+                .toModel();
+
 //        taskModel = Instancio.of(Task.class)
 //                .ignore(Select.field(Task::getId))
 //                .ignore(Select.field(Task::getTaskStatus))
