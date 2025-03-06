@@ -7,7 +7,6 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,6 @@ public class TaskStatusService {
         return taskStatusMapper.map(taskStatus);
     }
 
-    @Transactional
     public TaskStatusDTO updateTaskStatus(Long id, TaskStatusUpdateDTO taskStatusData) {
         var taskStatus = getById(id);
         taskStatusMapper.update(taskStatusData, taskStatus);
