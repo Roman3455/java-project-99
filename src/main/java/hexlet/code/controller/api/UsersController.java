@@ -36,7 +36,7 @@ public class UsersController {
     public ResponseEntity<List<UserDTO>> index() {
         var result = userService.getAllUsers();
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.OK)
                 .header("X-Total-Count", String.valueOf(result.size()))
                 .body(result);
     }
