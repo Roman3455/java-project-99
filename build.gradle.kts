@@ -7,7 +7,7 @@ plugins {
     application
 
     id("io.freefair.lombok") version "8.12.1"
-//    id("io.sentry.jvm.gradle") version "5.3.0"
+    id("io.sentry.jvm.gradle") version "5.3.0"
     id("com.github.ben-manes.versions") version "0.52.0"
 
     id("org.springframework.boot") version "3.4.3"
@@ -25,26 +25,26 @@ application {
     mainClass.set("hexlet.code.AppApplication")
 }
 
-//buildscript {
-//    repositories {
-//        mavenCentral()
-//    }
-//}
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
 
-//sentry {
-//    includeSourceContext.set(true)
-//
-//    org.set("demo-kq0")
-//    projectName.set("java-spring-boot")
-//    authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
-//}
+sentry {
+    includeSourceContext.set(true)
+
+    org.set("demo-kq0")
+    projectName.set("java-spring-boot")
+    authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-//    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     runtimeOnly("com.h2database:h2")
@@ -86,6 +86,6 @@ tasks.jacocoTestReport {
     }
 }
 
-//tasks.sentryBundleSourcesJava {
-//    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
-//}
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
+}
