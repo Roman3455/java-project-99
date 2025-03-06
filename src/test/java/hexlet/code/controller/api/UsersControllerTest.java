@@ -3,15 +3,14 @@ package hexlet.code.controller.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.user.UserDTO;
-import hexlet.code.dto.user.UserUpdateDTO;
-import hexlet.code.model.entity.User;
+import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
+import lombok.extern.slf4j.Slf4j;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,9 +41,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 final class UsersControllerTest {
@@ -161,32 +160,34 @@ final class UsersControllerTest {
 
     @Test
     void testCreateWithRequiredFields() throws Exception {
-        var userData = Instancio.of(modelGenerator.getUserModelWithRequiredFields()).create();
+        var data = new HashMap<String, String>();
+        data.put("email", "john.doe@example.com");
+        data.put("password", "123");
 
         var request = post("/api/users")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(userData));
+                .content(om.writeValueAsString(data));
 
         mvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        var user = userRepository.findByEmail(userData.getEmail()).orElse(null);
+        var user = userRepository.findByEmail(data.get("email")).orElse(null);
 
         assertNotNull(user);
         assertNull(user.getFirstName());
         assertNull(user.getLastName());
-        assertThat(user.getEmail()).isEqualTo(userData.getEmail());
+        assertThat(user.getEmail()).isEqualTo(data.get("email"));
         assertThat(user.getCreatedAt()).isEqualTo(LocalDate.now());
-        assertTrue(passwordEncoder.matches(userData.getPassword(), user.getPassword()));
+        assertTrue(passwordEncoder.matches(data.get("password"), user.getHashedPassword()));
     }
 
     @Test
     void testCreateWithInvalidParameters() throws Exception {
         var userData = Instancio.of(modelGenerator.getUserModelWithRequiredFields()).create();
         userData.setEmail("invalidemail,com");
-        userData.setPassword("11");
+        userData.setHashedPassword("11");
 
         var request = post("/api/users")
                 .with(token)
@@ -201,7 +202,7 @@ final class UsersControllerTest {
     void testCreateWithNullParameters() throws Exception {
         var userData = Instancio.of(modelGenerator.getUserModelWithRequiredFields()).create();
         userData.setEmail(null);
-        userData.setPassword(null);
+        userData.setHashedPassword(null);
 
         var request = post("/api/users")
                 .with(token)
@@ -234,7 +235,7 @@ final class UsersControllerTest {
         assertThat(user.getFirstName()).isEqualTo(data.get("firstName"));
         assertThat(user.getLastName()).isEqualTo(data.get("lastName"));
         assertThat(user.getEmail()).isEqualTo(data.get("email"));
-        assertTrue(passwordEncoder.matches(data.get("password"), user.getPassword()));
+        assertTrue(passwordEncoder.matches(data.get("password"), user.getHashedPassword()));
         assertThat(user.getUpdatedAt()).isEqualTo(LocalDate.now());
     }
 
@@ -278,23 +279,23 @@ final class UsersControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-//    void testUpdateWithInvalidId() throws Exception {
-//        var data = new HashMap<String, String>();
-//        data.put("email", "test@example.com");
-//        data.put("password", "password");
-//
-//        mvc.perform(put("/api/users/999")
-//                        .with(token)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(om.writeValueAsString(data)))
-//                .andExpect(status().isForbidden());
-//    }
+    @Test
+    void testUpdateWithInvalidId() throws Exception {
+        var data = new HashMap<String, String>();
+        data.put("email", "test@example.com");
+        data.put("password", "password");
+
+        mvc.perform(put("/api/users/999")
+                        .with(token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(data)))
+                .andExpect(status().isForbidden());
+    }
 
     @Test
     void testDestroy() throws Exception {
-//        mvc.perform(delete("/api/users/" + testUser.getId()))
-//                .andExpect(status().isUnauthorized());
+        mvc.perform(delete("/api/users/" + testUser.getId()))
+                .andExpect(status().isUnauthorized());
         mvc.perform(delete("/api/users/" + testUser.getId())
                         .with(token))
                 .andExpect(status().isNoContent());
@@ -302,10 +303,10 @@ final class UsersControllerTest {
         assertFalse(userRepository.existsById(testUser.getId()));
     }
 
-//    @Test
-//    void testDestroyWithInvalidId() throws Exception {
-//        mvc.perform(delete("/api/users/999")
-//                        .with(token))
-//                .andExpect(status().isForbidden());
-//    }
+    @Test
+    void testDestroyWithInvalidId() throws Exception {
+        mvc.perform(delete("/api/users/999")
+                        .with(token))
+                .andExpect(status().isForbidden());
+    }
 }

@@ -26,6 +26,10 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UsersController {
 
+    private static final String PRINCIPAL = """
+        @userUtils.getCurrentUser().getId() == #id
+    """;
+
     private final UserService userService;
 
     @GetMapping("")
@@ -51,7 +55,7 @@ public class UsersController {
     }
 
     @PutMapping(path = "/{id}")
-//    @PreAuthorize("#id == @userUtils.getCurrentUser().getId()")
+    @PreAuthorize(PRINCIPAL)
     public UserDTO update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
 
         return userService.updateUser(id, dto);
@@ -59,7 +63,7 @@ public class UsersController {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @PreAuthorize("#id == @userUtils.getCurrentUser().getId()")
+    @PreAuthorize(PRINCIPAL)
     public void destroy(@PathVariable Long id) {
 
         userService.deleteUser(id);

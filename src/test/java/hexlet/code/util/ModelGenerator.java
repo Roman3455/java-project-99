@@ -3,14 +3,14 @@ package hexlet.code.util;
 //import hexlet.code.model.entity.Label;
 //import hexlet.code.model.entity.Task;
 //import hexlet.code.model.entity.TaskStatus;
-import hexlet.code.model.entity.User;
+import hexlet.code.model.User;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-@RequiredArgsConstructor
 public class ModelGenerator {
 
     private Model<User> userModelWithAllFields;
@@ -27,8 +26,11 @@ public class ModelGenerator {
 //    private Model<Task> taskModel;
 //    private Model<Label> labelModel;
 
-    private final Faker faker;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private Faker faker;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostConstruct
     private void init() {
@@ -38,7 +40,8 @@ public class ModelGenerator {
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
                 .supply(Select.field(User::getLastName), () -> faker.name().lastName())
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPassword), () -> passwordEncoder.encode(faker.internet().password()))
+                .supply(Select.field(User::getHashedPassword), () -> passwordEncoder
+                        .encode(faker.internet().password()))
                 .ignore(Select.field(User::getCreatedAt))
                 .ignore(Select.field(User::getUpdatedAt))
                 .toModel();
@@ -48,7 +51,7 @@ public class ModelGenerator {
                 .ignore(Select.field(User::getFirstName))
                 .ignore(Select.field(User::getLastName))
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPassword), () -> passwordEncoder.encode(faker.internet().password()))
+                .supply(Select.field(User::getHashedPassword), () -> faker.internet().password())
                 .ignore(Select.field(User::getCreatedAt))
                 .ignore(Select.field(User::getUpdatedAt))
                 .toModel();
